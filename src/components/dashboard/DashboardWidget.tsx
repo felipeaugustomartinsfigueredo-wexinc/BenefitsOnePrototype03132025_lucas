@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, Heart, Shield, DollarSign, Calendar, Users, FileText, Clock, Settings } from 'lucide-react';
+import { Activity, Heart, Shield, DollarSign, Calendar, Clock, Settings } from 'lucide-react';
 import { useThemeStore } from '../../store/useThemeStore';
 import { useTranslation } from 'react-i18next';
 import { WidgetType, useDashboardStore } from '../../store/useDashboardStore';
@@ -71,14 +71,14 @@ export const DashboardWidget: React.FC<DashboardWidgetProps> = ({ id, type }) =>
       type: 'dependentCount',
       titleKey: 'dashboard.metrics.dependentCount.title',
       value: '3 Dependents',
-      icon: <Users className="w-5 h-5" style={{ color: theme.colors.primary.yellow }} />,
+      icon: <Clock className="w-5 h-5" style={{ color: theme.colors.primary.yellow }} />,
       color: theme.colors.primary.yellow,
     },
     {
       type: 'claimsInProgress',
       titleKey: 'dashboard.metrics.claimsInProgress.title',
       value: '5 Claims',
-      icon: <FileText className="w-5 h-5" style={{ color: theme.colors.primary.red }} />,
+      icon: <Clock className="w-5 h-5" style={{ color: theme.colors.primary.red }} />,
       color: theme.colors.primary.red,
     },
   ];
@@ -140,7 +140,7 @@ export const DashboardWidget: React.FC<DashboardWidgetProps> = ({ id, type }) =>
           <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             {t(currentWidget.titleKey)}
           </p>
-          <p className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <p className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
             {currentWidget.value}
           </p>
         </div>

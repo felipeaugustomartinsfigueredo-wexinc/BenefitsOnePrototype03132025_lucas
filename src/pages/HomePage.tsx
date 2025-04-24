@@ -13,9 +13,9 @@ export const HomePage: React.FC = () => {
   const { widgets } = useDashboardStore();
   
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+    <div className="space-y-4 px-4 md:px-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <h1 className={`text-2xl sm:text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
           {t('dashboard.title')}
         </h1>
         <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -23,9 +23,9 @@ export const HomePage: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 lg:col-span-9 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div className="lg:col-span-9 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {widgets.map((widget) => (
               <DashboardWidget
                 key={widget.id}
@@ -38,7 +38,7 @@ export const HomePage: React.FC = () => {
             <MarketingCarousel />
           </Card>
         </div>
-        <div className="col-span-12 lg:col-span-3">
+        <div className="lg:col-span-3">
           <Card>
             <NotificationsWidget />
           </Card>
