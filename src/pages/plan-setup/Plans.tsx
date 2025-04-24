@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useThemeStore } from '../../store/useThemeStore';
-import { Plus, Search, MoreVertical, Heart, Shield, Eye, FileText, Clock, Users } from 'lucide-react';
+import { Plus, Search, MoreVertical, Heart, Shield, Eye, FileText, Clock, Users, X, Edit, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
 
 interface Plan {
   id: string;
@@ -13,106 +17,206 @@ interface Plan {
     individual: number;
     family: number;
   };
+  coverage: string[];
+  deductible?: number;
+  outOfPocket?: number;
+  description?: string;
 }
 
-const mockPlans: Plan[] = [
-  {
-    id: '1',
-    name: 'Premium PPO',
-    type: 'medical',
-    status: 'active',
-    effectiveDate: '2024-01-01',
-    enrollmentCount: 245,
-    premium: {
-      individual: 250,
-      family: 750,
-    },
-  },
-  {
-    id: '2',
-    name: 'Standard PPO',
-    type: 'medical',
-    status: 'active',
-    effectiveDate: '2024-01-01',
-    enrollmentCount: 180,
-    premium: {
-      individual: 150,
-      family: 450,
-    },
-  },
-  {
-    id: '3',
-    name: 'Premium Dental',
-    type: 'dental',
-    status: 'active',
-    effectiveDate: '2024-01-01',
-    enrollmentCount: 320,
-    premium: {
-      individual: 45,
-      family: 135,
-    },
-  },
-  {
-    id: '4',
-    name: 'Premium Vision',
-    type: 'vision',
-    status: 'active',
-    effectiveDate: '2024-01-01',
-    enrollmentCount: 290,
-    premium: {
-      individual: 20,
-      family: 60,
-    },
-  },
-  {
-    id: '5',
-    name: 'Basic Life',
-    type: 'life',
-    status: 'active',
-    effectiveDate: '2024-01-01',
-    enrollmentCount: 410,
-    premium: {
-      individual: 0,
-      family: 0,
-    },
-  },
-  {
-    id: '6',
-    name: 'Short-Term Disability',
-    type: 'disability',
-    status: 'active',
-    effectiveDate: '2024-01-01',
-    enrollmentCount: 380,
-    premium: {
-      individual: 25,
-      family: 0,
-    },
-  },
-  {
-    id: '7',
-    name: 'High Deductible Health Plan',
-    type: 'medical',
-    status: 'draft',
-    effectiveDate: '2024-07-01',
-    enrollmentCount: 0,
-    premium: {
-      individual: 75,
-      family: 225,
-    },
-  },
-  {
-    id: '8',
-    name: 'Basic Dental',
-    type: 'dental',
-    status: 'archived',
-    effectiveDate: '2023-01-01',
-    enrollmentCount: 0,
-    premium: {
-      individual: 30,
-      family: 90,
-    },
-  },
-];
+interface PlanModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (plan: Omit<Plan, 'id' | 'enrollmentCount'>) => void;
+  plan?: Plan;
+}
+
+const PlanModal: React.FC<PlanModalProps> = ({ isOpen, onClose, onSave, plan }) => {
+  const { isDarkMode } = useThemeStore();
+  const { t } = useTranslation();
+  const [formData, setFormData] = useState<Omit<Plan, 'id' | 'enrollmentCount'>>({
+    name: plan?.name || '',
+    type: plan?.type || 'medical',
+    status: plan?.status || 'draft',
+    effectiveDate: plan?.effectiveDate || new Date().toISOString().split('T')[0],
+    premium: plan?.premium || { individual: 0, family: 0 },
+    coverage: plan?.coverage || [],
+    deductible: plan?.deductible || 0,
+    outOfPocket: plan?.outOfPocket || 0,
+    description: plan?.description || '',
+  });
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <Card className="w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+        <h2 className={`text-2xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          {plan ? 'Edit Plan' : 'Add New Plan'}
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Plan Name
+            </label>
+            <Input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              required
+            />
+          </div>
+
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Plan Type
+            </label>
+            <select
+              value={formData.type}
+              onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as Plan['type'] }))}
+              className={`w-full px-4 py-2 rounded-lg border ${
+                isDarkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'border-gray-200'
+              }`}
+              required
+            >
+              <option value="medical">Medical</option>
+              <option value="dental">Dental</option>
+              <option value="vision">Vision</option>
+              <option value="life">Life Insurance</option>
+              <option value="disability">Disability</option>
+            </select>
+          </div>
+
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Description
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              className={`w-full px-4 py-2 rounded-lg border ${
+                isDarkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'border-gray-200'
+              }`}
+              rows={3}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                Individual Premium
+              </label>
+              <Input
+                type="number"
+                value={formData.premium.individual}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  premium: { ...prev.premium, individual: Number(e.target.value) }
+                }))}
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                Family Premium
+              </label>
+              <Input
+                type="number"
+                value={formData.premium.family}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  premium: { ...prev.premium, family: Number(e.target.value) }
+                }))}
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                Deductible
+              </label>
+              <Input
+                type="number"
+                value={formData.deductible}
+                onChange={(e) => setFormData(prev => ({ ...prev, deductible: Number(e.target.value) }))}
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                Out of Pocket Maximum
+              </label>
+              <Input
+                type="number"
+                value={formData.outOfPocket}
+                onChange={(e) => setFormData(prev => ({ ...prev, outOfPocket: Number(e.target.value) }))}
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Effective Date
+            </label>
+            <Input
+              type="date"
+              value={formData.effectiveDate}
+              onChange={(e) => setFormData(prev => ({ ...prev, effectiveDate: e.target.value }))}
+              required
+            />
+          </div>
+
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Status
+            </label>
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as Plan['status'] }))}
+              className={`w-full px-4 py-2 rounded-lg border ${
+                isDarkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'border-gray-200'
+              }`}
+              required
+            >
+              <option value="draft">Draft</option>
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <Button variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit">
+              {plan ? 'Update Plan' : 'Add Plan'}
+            </Button>
+          </div>
+        </form>
+      </Card>
+    </div>
+  );
+};
 
 const getTypeIcon = (type: string) => {
   switch (type) {
@@ -136,13 +240,67 @@ export const Plans: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | undefined>();
+  const [plans, setPlans] = useState<Plan[]>([
+    {
+      id: '1',
+      name: 'Premium PPO',
+      type: 'medical',
+      status: 'active',
+      effectiveDate: '2024-01-01',
+      enrollmentCount: 245,
+      premium: {
+        individual: 250,
+        family: 750,
+      },
+      coverage: [
+        'Primary Care: $20 copay',
+        'Specialist: $40 copay',
+        'Emergency Room: $250 copay',
+        'Hospitalization: 10% after deductible',
+        'Prescription Drugs: $10/$30/$50 copays',
+      ],
+      deductible: 1000,
+      outOfPocket: 3000,
+      description: 'Comprehensive medical coverage with low deductibles and copays.',
+    },
+    // Add more mock plans here
+  ]);
 
-  const filteredPlans = mockPlans.filter(plan => {
+  const filteredPlans = plans.filter(plan => {
     const matchesSearch = plan.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = selectedType === 'all' || plan.type === selectedType;
     const matchesStatus = selectedStatus === 'all' || plan.status === selectedStatus;
     return matchesSearch && matchesType && matchesStatus;
   });
+
+  const handleSavePlan = (planData: Omit<Plan, 'id' | 'enrollmentCount'>) => {
+    if (selectedPlan) {
+      // Update existing plan
+      setPlans(prev => prev.map(plan =>
+        plan.id === selectedPlan.id
+          ? { ...plan, ...planData }
+          : plan
+      ));
+    } else {
+      // Add new plan
+      const newPlan: Plan = {
+        id: Date.now().toString(),
+        enrollmentCount: 0,
+        ...planData,
+      };
+      setPlans(prev => [...prev, newPlan]);
+    }
+    setIsModalOpen(false);
+    setSelectedPlan(undefined);
+  };
+
+  const handleDeletePlan = (id: string) => {
+    if (confirm('Are you sure you want to delete this plan?')) {
+      setPlans(prev => prev.filter(plan => plan.id !== id));
+    }
+  };
 
   const getStatusClass = (status: string) => {
     switch (status) {
@@ -167,150 +325,166 @@ export const Plans: React.FC = () => {
         <h1 className={`text-4xl font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
           Plans
         </h1>
-        <button
-          className="px-4 py-2 rounded-lg text-white text-sm transition-all duration-300 hover:opacity-90 flex items-center gap-2"
-          style={{ backgroundColor: theme.colors.primary.teal }}
+        <Button
+          icon={<Plus className="w-4 h-4" />}
+          onClick={() => setIsModalOpen(true)}
         >
-          <Plus className="w-4 h-4" />
           Add Plan
-        </button>
+        </Button>
       </div>
 
-      <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-sm`}>
-        <div className="p-6">
-          <div className="flex flex-wrap items-center gap-4 mb-6">
-            <div className="relative flex-1 min-w-[240px]">
-              <input
-                type="text"
-                placeholder="Search plans..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className={`pl-10 pr-4 py-2 rounded-lg border w-full ${
-                  isDarkMode 
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                    : 'border-gray-200 focus:ring-2 focus:ring-teal-500'
-                } focus:outline-none transition-all duration-300`}
-              />
-              <Search className={`absolute left-3 top-2.5 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'} w-5 h-5`} />
-            </div>
-
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className={`px-4 py-2 rounded-lg border ${
-                isDarkMode
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'border-gray-200'
-              }`}
-            >
-              <option value="all">All Types</option>
-              <option value="medical">Medical</option>
-              <option value="dental">Dental</option>
-              <option value="vision">Vision</option>
-              <option value="life">Life</option>
-              <option value="disability">Disability</option>
-            </select>
-
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className={`px-4 py-2 rounded-lg border ${
-                isDarkMode
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'border-gray-200'
-              }`}
-            >
-              <option value="all">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="draft">Draft</option>
-              <option value="archived">Archived</option>
-            </select>
+      <Card>
+        <div className="flex flex-wrap items-center gap-4 mb-6">
+          <div className="relative flex-1 min-w-[240px]">
+            <Input
+              type="text"
+              placeholder="Search plans..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              leftIcon={<Search className="w-5 h-5" />}
+            />
           </div>
 
-          <div className="space-y-4">
-            {filteredPlans.map((plan) => (
-              <div
-                key={plan.id}
-                className={`p-4 rounded-lg border ${
-                  isDarkMode ? 'border-gray-700' : 'border-gray-200'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 min-w-[200px]">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
-                    }`}>
-                      {getTypeIcon(plan.type)}
-                    </div>
-                    <div>
-                      <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {plan.name}
-                      </h3>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} capitalize`}>
-                        {plan.type}
-                      </p>
+          <select
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
+            className={`px-4 py-2 rounded-lg border ${
+              isDarkMode
+                ? 'bg-gray-700 border-gray-600 text-white'
+                : 'border-gray-200'
+            }`}
+          >
+            <option value="all">All Types</option>
+            <option value="medical">Medical</option>
+            <option value="dental">Dental</option>
+            <option value="vision">Vision</option>
+            <option value="life">Life</option>
+            <option value="disability">Disability</option>
+          </select>
+
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className={`px-4 py-2 rounded-lg border ${
+              isDarkMode
+                ? 'bg-gray-700 border-gray-600 text-white'
+                : 'border-gray-200'
+            }`}
+          >
+            <option value="all">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="draft">Draft</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+
+        <div className="space-y-4">
+          {filteredPlans.map((plan) => (
+            <div
+              key={plan.id}
+              className={`p-4 rounded-lg border ${
+                isDarkMode ? 'border-gray-700' : 'border-gray-200'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 min-w-[200px]">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+                  }`}>
+                    {getTypeIcon(plan.type)}
+                  </div>
+                  <div>
+                    <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      {plan.name}
+                    </h3>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} capitalize`}>
+                      {plan.type}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-6 flex-1">
+                  <div>
+                    <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Status
+                    </p>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs ${getStatusClass(plan.status)}`}>
+                      {plan.status.charAt(0).toUpperCase() + plan.status.slice(1)}
+                    </span>
+                  </div>
+
+                  <div>
+                    <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Effective Date
+                    </p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      {new Date(plan.effectiveDate).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Enrollment
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <Users className="w-4 h-4 text-gray-400" />
+                      <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        {plan.enrollmentCount.toLocaleString()}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-6 flex-1">
-                    <div>
-                      <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Status
-                      </p>
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs ${getStatusClass(plan.status)}`}>
-                        {plan.status.charAt(0).toUpperCase() + plan.status.slice(1)}
-                      </span>
-                    </div>
+                  <div>
+                    <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Individual Premium
+                    </p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      ${plan.premium.individual}
+                    </p>
+                  </div>
 
-                    <div>
-                      <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Effective Date
-                      </p>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {new Date(plan.effectiveDate).toLocaleDateString()}
-                      </p>
-                    </div>
+                  <div>
+                    <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Family Premium
+                    </p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      ${plan.premium.family}
+                    </p>
+                  </div>
 
-                    <div>
-                      <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Enrollment
-                      </p>
-                      <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4 text-gray-400" />
-                        <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                          {plan.enrollmentCount.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Individual Premium
-                      </p>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {plan.premium.individual === 0 ? 'Free' : `$${plan.premium.individual}`}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Family Premium
-                      </p>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {plan.premium.family === 0 ? 'N/A' : `$${plan.premium.family}`}
-                      </p>
-                    </div>
-
-                    <button className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}>
-                      <MoreVertical className="w-4 h-4" />
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setSelectedPlan(plan);
+                        setIsModalOpen(true);
+                      }}
+                      className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeletePlan(plan.id)}
+                      className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors text-red-500`}
+                    >
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
-      </div>
+      </Card>
+
+      <PlanModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedPlan(undefined);
+        }}
+        onSave={handleSavePlan}
+        plan={selectedPlan}
+      />
     </div>
   );
 };

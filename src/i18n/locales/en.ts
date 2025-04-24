@@ -10,6 +10,32 @@ export const en = {
     edit: 'Edit',
     delete: 'Delete',
     close: 'Close',
+    learnMore: 'Learn More',
+    getStarted: 'Get Started',
+  },
+  carousel: {
+    slides: {
+      hsa: {
+        title: 'Maximize Your HSA Benefits',
+        description: 'Learn how to make the most of your Health Savings Account with our expert tips and strategies.',
+      },
+      dental: {
+        title: 'New Dental Coverage Options',
+        description: 'Explore our enhanced dental coverage plans with better benefits and lower premiums.',
+      },
+      family: {
+        title: 'Family Coverage Made Easy',
+        description: "Managing your family's healthcare has never been simpler with our integrated platform.",
+      },
+      vision: {
+        title: 'Vision Benefits Spotlight',
+        description: 'Get comprehensive vision coverage including eye exams, glasses, and contact lenses.',
+      },
+    },
+    cta: {
+      viewPlans: 'View Plans',
+      exploreCoverage: 'Explore Coverage',
+    },
   },
   auth: {
     welcomeBack: 'Welcome Back',
@@ -243,28 +269,64 @@ export const en = {
       },
     },
   },
-  hsa: {
-    account: {
-      title: 'HSA Account Details',
-      balance: 'Current Balance',
-      ytdContributions: 'YTD Contributions',
-      remainingLimit: 'Remaining Contribution Limit',
-      recentTransactions: 'Recent Transactions',
-      transactionHistory: 'Transaction History',
+  notifications: {
+    title: 'Notifications',
+    unreadCount: '{{count}} unread',
+    viewAll: 'View All Notifications',
+    enrollment: {
+      deadline: 'Benefits Enrollment Deadline',
+      deadlineMessage: 'Open enrollment period ends in 5 days. Complete your selections soon.',
     },
-    investments: {
-      title: 'HSA Investments',
-      portfolioValue: 'Portfolio Value',
-      returns: 'Investment Returns',
-      allocation: 'Asset Allocation',
-      holdings: 'Current Holdings',
+    hsa: {
+      contribution: 'New HSA Contribution',
+      contributionMessage: 'Your employer has made a contribution of $250 to your HSA.',
     },
     claims: {
-      title: 'HSA Claims',
-      pending: 'Pending Claims',
-      approved: 'Approved Claims',
-      rejected: 'Rejected Claims',
-      submit: 'Submit New Claim',
+      approved: 'Claim Approved',
+      approvedMessage: 'Your recent medical claim has been approved and processed.',
+    },
+    wellness: {
+      update: 'Wellness Program Update',
+      updateMessage: 'New wellness challenges are available. Participate to earn rewards.',
+    },
+  },
+  benefits: {
+    medical: {
+      title: 'Medical Benefits',
+      currentPlan: 'Current Plan',
+      nextRenewal: 'Next Renewal',
+      renewalDate: 'December 31, 2025',
+      enrollmentStatus: 'Enrollment Status',
+      status: {
+        active: 'Active',
+        inactive: 'Inactive',
+        pending: 'Pending',
+      },
+      myPlan: 'My Plan',
+      perMonth: 'per month',
+      deductible: 'Deductible',
+      outOfPocket: 'Out of Pocket Max',
+      changePlan: 'Change Plan',
+      quickLinks: 'Quick Links',
+      findDoctor: 'Find a Doctor',
+      locateFacilities: 'Locate Facilities',
+      costEstimator: 'Cost Estimator',
+      needHelp: 'Need Help?',
+      helpDescription: 'Contact our benefits team for assistance with your medical coverage.',
+      support: 'Benefits Support',
+      plans: {
+        premiumPPO: 'Premium PPO',
+        standardPPO: 'Standard PPO',
+        basicPPO: 'Basic PPO',
+        hdhp: 'High Deductible Health Plan',
+      },
+      coverage: {
+        primaryCare: 'Primary Care: $20 copay',
+        specialist: 'Specialist: $40 copay',
+        emergency: 'Emergency Room: $250 copay',
+        hospitalization: 'Hospitalization: 10% after deductible',
+        prescription: 'Prescription Drugs: $10/$30/$50 copays',
+      },
     },
   },
 };

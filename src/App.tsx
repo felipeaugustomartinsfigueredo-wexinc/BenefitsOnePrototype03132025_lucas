@@ -10,6 +10,7 @@ import { ThemeLogo } from './pages/theme/ThemeLogo';
 import { ReleaseManagement } from './pages/releases/ReleaseManagement';
 import { UserList } from './pages/user-management/UserList';
 import { RoleList } from './pages/user-management/RoleList';
+import { UserProfile } from './pages/user-management/UserProfile';
 import { AccountDetails } from './pages/hsa/AccountDetails';
 import { Investments } from './pages/hsa/Investments';
 import { Claims } from './pages/hsa/Claims';
@@ -53,6 +54,14 @@ function App() {
           </PrivateRoute>
         } />
         
+        <Route path="/profile" element={
+          <PrivateRoute>
+            <Layout>
+              <UserProfile />
+            </Layout>
+          </PrivateRoute>
+        } />
+
         <Route path="/theme/colors" element={
           <PrivateRoute>
             <Layout>
