@@ -41,7 +41,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ isOpen, onClose }) => 
   return (
     <div
       ref={menuRef}
-      className="absolute right-0 top-12 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-2 z-[100]"
+      className="absolute right-0 top-12 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-2"
     >
       <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
         <p className="text-sm font-bold text-gray-900 dark:text-white">John Doe</p>
@@ -51,7 +51,10 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ isOpen, onClose }) => 
       <div className="py-2">
         <button
           className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-3"
-          onClick={() => {/* Implement profile settings */}}
+          onClick={() => {
+            onClose();
+            navigate('/profile');
+          }}
         >
           <Settings className="w-4 h-4" />
           Profile Settings

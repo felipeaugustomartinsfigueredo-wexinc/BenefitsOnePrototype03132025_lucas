@@ -10,6 +10,32 @@ export const fr = {
     edit: 'Modifier',
     delete: 'Supprimer',
     close: 'Fermer',
+    learnMore: 'En savoir plus',
+    getStarted: 'Commencer',
+  },
+  carousel: {
+    slides: {
+      hsa: {
+        title: 'Maximisez vos avantages HSA',
+        description: 'Apprenez à tirer le meilleur parti de votre compte d\'épargne santé grâce à nos conseils et stratégies d\'experts.',
+      },
+      dental: {
+        title: 'Nouvelles options de couverture dentaire',
+        description: 'Découvrez nos plans de couverture dentaire améliorés avec de meilleurs avantages et des primes plus basses.',
+      },
+      family: {
+        title: 'Couverture familiale simplifiée',
+        description: 'La gestion des soins de santé de votre famille n\'a jamais été aussi simple avec notre plateforme intégrée.',
+      },
+      vision: {
+        title: 'Focus sur les avantages vision',
+        description: 'Obtenez une couverture vision complète incluant examens de la vue, lunettes et lentilles de contact.',
+      },
+    },
+    cta: {
+      viewPlans: 'Voir les plans',
+      exploreCoverage: 'Explorer la couverture',
+    },
   },
   header: {
     appName: 'Benefits One',
@@ -163,6 +189,27 @@ export const fr = {
         bugFixes: 'Corrections de Bugs',
         improvements: 'Améliorations',
       },
+    },
+  },
+  notifications: {
+    title: 'Notifications',
+    unreadCount: '{{count}} non lues',
+    viewAll: 'Voir Toutes les Notifications',
+    enrollment: {
+      deadline: "Date Limite d'Inscription aux Avantages",
+      deadlineMessage: "La période d'inscription ouverte se termine dans 5 jours. Complétez vos sélections bientôt.",
+    },
+    hsa: {
+      contribution: 'Nouvelle Contribution HSA',
+      contributionMessage: 'Votre employeur a effectué une contribution de 250$ à votre HSA.',
+    },
+    claims: {
+      approved: 'Demande Approuvée',
+      approvedMessage: 'Votre récente demande médicale a été approuvée et traitée.',
+    },
+    wellness: {
+      update: 'Mise à Jour du Programme de Bien-être',
+      updateMessage: 'De nouveaux défis bien-être sont disponibles. Participez pour gagner des récompenses.',
     },
   },
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, Heart, Shield, DollarSign, Calendar, Clock, Settings } from 'lucide-react';
+import { Activity, Heart, Shield, DollarSign, Calendar, Users, FileText, Clock, Settings } from 'lucide-react';
 import { useThemeStore } from '../../store/useThemeStore';
 import { useTranslation } from 'react-i18next';
 import { WidgetType, useDashboardStore } from '../../store/useDashboardStore';
@@ -8,7 +8,7 @@ import { Card } from '../ui/Card';
 interface WidgetOption {
   type: WidgetType;
   titleKey: string;
-  value: string;
+  valueKey: string;
   icon: React.ReactNode;
   color: string;
 }
@@ -28,62 +28,86 @@ export const DashboardWidget: React.FC<DashboardWidgetProps> = ({ id, type }) =>
     {
       type: 'healthScore',
       titleKey: 'dashboard.metrics.healthScore.title',
-      value: t('dashboard.metrics.healthScore.value', { score: 85 }),
+      valueKey: 'dashboard.metrics.healthScore.value',
       icon: <Activity className="w-5 h-5" style={{ color: theme.colors.primary.teal }} />,
       color: theme.colors.primary.teal,
     },
     {
       type: 'activeBenefits',
       titleKey: 'dashboard.metrics.activeBenefits.title',
-      value: t('dashboard.metrics.activeBenefits.value', { count: 4 }),
+      valueKey: 'dashboard.metrics.activeBenefits.value',
       icon: <Shield className="w-5 h-5" style={{ color: theme.colors.primary.lightBlue }} />,
       color: theme.colors.primary.lightBlue,
     },
     {
       type: 'healthClaims',
       titleKey: 'dashboard.metrics.healthClaims.title',
-      value: t('dashboard.metrics.healthClaims.value', { count: 2 }),
+      valueKey: 'dashboard.metrics.healthClaims.value',
       icon: <Heart className="w-5 h-5" style={{ color: theme.colors.primary.red }} />,
       color: theme.colors.primary.red,
     },
     {
       type: 'fsaBalance',
       titleKey: 'dashboard.metrics.fsaBalance.title',
-      value: t('dashboard.metrics.fsaBalance.value', { amount: '2,450' }),
+      valueKey: 'dashboard.metrics.fsaBalance.value',
       icon: <DollarSign className="w-5 h-5" style={{ color: theme.colors.primary.yellow }} />,
       color: theme.colors.primary.yellow,
     },
     {
       type: 'hsaBalance',
       titleKey: 'dashboard.metrics.hsaBalance.title',
-      value: '$3,250.00',
+      valueKey: 'dashboard.metrics.hsaBalance.value',
       icon: <DollarSign className="w-5 h-5" style={{ color: theme.colors.primary.teal }} />,
       color: theme.colors.primary.teal,
     },
     {
       type: 'nextAppointment',
       titleKey: 'dashboard.metrics.nextAppointment.title',
-      value: 'March 12, 2025',
+      valueKey: 'dashboard.metrics.nextAppointment.value',
       icon: <Calendar className="w-5 h-5" style={{ color: theme.colors.primary.lightBlue }} />,
       color: theme.colors.primary.lightBlue,
     },
     {
       type: 'dependentCount',
       titleKey: 'dashboard.metrics.dependentCount.title',
-      value: '3 Dependents',
-      icon: <Clock className="w-5 h-5" style={{ color: theme.colors.primary.yellow }} />,
+      valueKey: 'dashboard.metrics.dependentCount.value',
+      icon: <Users className="w-5 h-5" style={{ color: theme.colors.primary.yellow }} />,
       color: theme.colors.primary.yellow,
     },
     {
       type: 'claimsInProgress',
       titleKey: 'dashboard.metrics.claimsInProgress.title',
-      value: '5 Claims',
-      icon: <Clock className="w-5 h-5" style={{ color: theme.colors.primary.red }} />,
+      valueKey: 'dashboard.metrics.claimsInProgress.value',
+      icon: <FileText className="w-5 h-5" style={{ color: theme.colors.primary.red }} />,
       color: theme.colors.primary.red,
     },
   ];
 
   const currentWidget = widgetOptions.find(w => w.type === type) || widgetOptions[0];
+
+  // Mock data for demonstration
+  const getWidgetValue = (widget: WidgetOption) => {
+    switch (widget.type) {
+      case 'healthScore':
+        return t(widget.valueKey, { score: 85 });
+      case 'activeBenefits':
+        return t(widget.valueKey, { count: 4 });
+      case 'healthClaims':
+        return t(widget.valueKey, { count: 2 });
+      case 'fsaBalance':
+        return t(widget.valueKey, { amount: '2,450' });
+      case 'hsaBalance':
+        return t(widget.valueKey, { amount: '3,250' });
+      case 'nextAppointment':
+        return t(widget.valueKey, { date: 'April 15, 2025' });
+      case 'dependentCount':
+        return t(widget.valueKey, { count: 3 });
+      case 'claimsInProgress':
+        return t(widget.valueKey, { count: 5 });
+      default:
+        return '';
+    }
+  };
 
   return (
     <Card className="relative group">
@@ -137,11 +161,11 @@ export const DashboardWidget: React.FC<DashboardWidgetProps> = ({ id, type }) =>
           {currentWidget.icon}
         </div>
         <div>
-          <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+          <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             {t(currentWidget.titleKey)}
           </p>
-          <p className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-            {currentWidget.value}
+          <p className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            {getWidgetValue(currentWidget)}
           </p>
         </div>
       </div>

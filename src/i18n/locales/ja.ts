@@ -10,6 +10,32 @@ export const ja = {
     edit: '編集',
     delete: '削除',
     close: '閉じる',
+    learnMore: '詳細を見る',
+    getStarted: '始める',
+  },
+  carousel: {
+    slides: {
+      hsa: {
+        title: 'HSAベネフィットを最大限に活用',
+        description: '専門家のヒントと戦略で健康貯蓄口座を最大限に活用する方法を学びましょう。',
+      },
+      dental: {
+        title: '新しい歯科保険オプション',
+        description: 'より良い給付とより低い保険料で強化された歯科保険プランをご覧ください。',
+      },
+      family: {
+        title: '家族の保険が簡単に',
+        description: '統合プラットフォームで、家族の医療管理がこれまでになく簡単になりました。',
+      },
+      vision: {
+        title: 'ビジョンベネフィットのスポットライト',
+        description: '視力検査、眼鏡、コンタクトレンズを含む包括的なビジョン保険をご利用ください。',
+      },
+    },
+    cta: {
+      viewPlans: 'プランを見る',
+      exploreCoverage: '保険を探す',
+    },
   },
   header: {
     appName: 'Benefits One',
@@ -163,6 +189,27 @@ export const ja = {
         bugFixes: 'バグ修正',
         improvements: '改善点',
       },
+    },
+  },
+  notifications: {
+    title: '通知',
+    unreadCount: '未読{{count}}件',
+    viewAll: 'すべての通知を表示',
+    enrollment: {
+      deadline: '福利厚生登録期限',
+      deadlineMessage: 'オープン登録期間は5日後に終了します。選択を早めに完了してください。',
+    },
+    hsa: {
+      contribution: '新規HSA拠出金',
+      contributionMessage: '雇用主があなたのHSAに$250の拠出を行いました。',
+    },
+    claims: {
+      approved: '請求承認',
+      approvedMessage: 'あなたの最近の医療費請求が承認され、処理されました。',
+    },
+    wellness: {
+      update: 'ウェルネスプログラム更新',
+      updateMessage: '新しいウェルネスチャレンジが利用可能です。参加して報酬を獲得しましょう。',
     },
   },
 };

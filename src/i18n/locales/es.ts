@@ -10,6 +10,32 @@ export const es = {
     edit: 'Editar',
     delete: 'Eliminar',
     close: 'Cerrar',
+    learnMore: 'Más Información',
+    getStarted: 'Comenzar',
+  },
+  carousel: {
+    slides: {
+      hsa: {
+        title: 'Maximiza tus Beneficios HSA',
+        description: 'Aprende a aprovechar al máximo tu Cuenta de Ahorros para la Salud con nuestros consejos y estrategias de expertos.',
+      },
+      dental: {
+        title: 'Nuevas Opciones de Cobertura Dental',
+        description: 'Explora nuestros planes mejorados de cobertura dental con mejores beneficios y primas más bajas.',
+      },
+      family: {
+        title: 'Cobertura Familiar Simplificada',
+        description: 'Gestionar la atención médica de tu familia nunca ha sido más sencillo con nuestra plataforma integrada.',
+      },
+      vision: {
+        title: 'Destacados en Beneficios de Visión',
+        description: 'Obtén cobertura integral de visión que incluye exámenes de la vista, anteojos y lentes de contacto.',
+      },
+    },
+    cta: {
+      viewPlans: 'Ver Planes',
+      exploreCoverage: 'Explorar Cobertura',
+    },
   },
   header: {
     appName: 'Benefits One',
@@ -163,6 +189,27 @@ export const es = {
         bugFixes: 'Correcciones de Errores',
         improvements: 'Mejoras',
       },
+    },
+  },
+  notifications: {
+    title: 'Notificaciones',
+    unreadCount: '{{count}} sin leer',
+    viewAll: 'Ver Todas las Notificaciones',
+    enrollment: {
+      deadline: 'Fecha Límite de Inscripción de Beneficios',
+      deadlineMessage: 'El período de inscripción abierta termina en 5 días. Complete sus selecciones pronto.',
+    },
+    hsa: {
+      contribution: 'Nueva Contribución HSA',
+      contributionMessage: 'Su empleador ha realizado una contribución de $250 a su HSA.',
+    },
+    claims: {
+      approved: 'Reclamo Aprobado',
+      approvedMessage: 'Su reclamo médico reciente ha sido aprobado y procesado.',
+    },
+    wellness: {
+      update: 'Actualización del Programa de Bienestar',
+      updateMessage: 'Nuevos desafíos de bienestar están disponibles. Participe para ganar recompensas.',
     },
   },
 };

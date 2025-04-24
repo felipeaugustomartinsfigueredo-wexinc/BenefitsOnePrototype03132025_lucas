@@ -10,6 +10,32 @@ export const de = {
     edit: 'Bearbeiten',
     delete: 'Löschen',
     close: 'Schließen',
+    learnMore: 'Mehr erfahren',
+    getStarted: 'Loslegen',
+  },
+  carousel: {
+    slides: {
+      hsa: {
+        title: 'Maximieren Sie Ihre HSA-Vorteile',
+        description: 'Lernen Sie, wie Sie mit unseren Expertentipps und Strategien das Beste aus Ihrem Gesundheitssparkonto herausholen.',
+      },
+      dental: {
+        title: 'Neue Optionen für Zahnversicherung',
+        description: 'Entdecken Sie unsere verbesserten Zahnversicherungspläne mit besseren Leistungen und niedrigeren Prämien.',
+      },
+      family: {
+        title: 'Familienversicherung leicht gemacht',
+        description: 'Die Verwaltung der Gesundheitsversorgung Ihrer Familie war noch nie so einfach wie mit unserer integrierten Plattform.',
+      },
+      vision: {
+        title: 'Fokus auf Sehhilfeversicherung',
+        description: 'Erhalten Sie umfassende Sehhilfeversicherung einschließlich Augenuntersuchungen, Brillen und Kontaktlinsen.',
+      },
+    },
+    cta: {
+      viewPlans: 'Pläne anzeigen',
+      exploreCoverage: 'Versicherung erkunden',
+    },
   },
   header: {
     appName: 'Benefits One',
@@ -163,6 +189,27 @@ export const de = {
         bugFixes: 'Fehlerbehebungen',
         improvements: 'Verbesserungen',
       },
+    },
+  },
+  notifications: {
+    title: 'Benachrichtigungen',
+    unreadCount: '{{count}} ungelesen',
+    viewAll: 'Alle Benachrichtigungen anzeigen',
+    enrollment: {
+      deadline: 'Anmeldefrist für Leistungen',
+      deadlineMessage: 'Die offene Anmeldefrist endet in 5 Tagen. Schließen Sie Ihre Auswahl bald ab.',
+    },
+    hsa: {
+      contribution: 'Neuer HSA-Beitrag',
+      contributionMessage: 'Ihr Arbeitgeber hat einen Beitrag von $250 zu Ihrem HSA geleistet.',
+    },
+    claims: {
+      approved: 'Antrag genehmigt',
+      approvedMessage: 'Ihr kürzlich gestellter medizinischer Antrag wurde genehmigt und bearbeitet.',
+    },
+    wellness: {
+      update: 'Wellness-Programm Update',
+      updateMessage: 'Neue Wellness-Herausforderungen sind verfügbar. Nehmen Sie teil, um Belohnungen zu verdienen.',
     },
   },
 };

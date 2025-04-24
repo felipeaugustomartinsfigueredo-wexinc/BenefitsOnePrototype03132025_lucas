@@ -1,12 +1,13 @@
 import React from 'react';
 import { Bell, Calendar, FileText, Heart, AlertCircle } from 'lucide-react';
 import { useThemeStore } from '../../store/useThemeStore';
+import { useTranslation } from 'react-i18next';
 
 interface Notification {
   id: string;
   type: 'info' | 'warning' | 'success';
-  title: string;
-  message: string;
+  titleKey: string;
+  messageKey: string;
   date: string;
   read: boolean;
 }
@@ -15,32 +16,32 @@ const notifications: Notification[] = [
   {
     id: '1',
     type: 'warning',
-    title: 'Benefits Enrollment Deadline',
-    message: 'Open enrollment period ends in 5 days. Complete your selections soon.',
+    titleKey: 'notifications.enrollment.deadline',
+    messageKey: 'notifications.enrollment.deadlineMessage',
     date: '2025-03-10T10:00:00',
     read: false,
   },
   {
     id: '2',
     type: 'info',
-    title: 'New HSA Contribution',
-    message: 'Your employer has made a contribution of $250 to your HSA.',
+    titleKey: 'notifications.hsa.contribution',
+    messageKey: 'notifications.hsa.contributionMessage',
     date: '2025-02-24T14:30:00',
     read: false,
   },
   {
     id: '3',
     type: 'success',
-    title: 'Claim Approved',
-    message: 'Your recent medical claim has been approved and processed.',
+    titleKey: 'notifications.claims.approved',
+    messageKey: 'notifications.claims.approvedMessage',
     date: '2025-02-15T09:15:00',
     read: true,
   },
   {
     id: '4',
     type: 'info',
-    title: 'Wellness Program Update',
-    message: 'New wellness challenges are available. Participate to earn rewards.',
+    titleKey: 'notifications.wellness.update',
+    messageKey: 'notifications.wellness.updateMessage',
     date: '2025-01-22T16:45:00',
     read: true,
   },
@@ -60,17 +61,18 @@ const getIcon = (type: string) => {
 
 export const NotificationsWidget: React.FC = () => {
   const { isDarkMode } = useThemeStore();
+  const { t } = useTranslation();
 
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h2 className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-          Notifications
+        <h2 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          {t('notifications.title')}
         </h2>
         <span className={`text-xs px-2 py-1 rounded-full ${
           isDarkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'
         }`}>
-          {notifications.filter(n => !n.read).length} unread
+          {t('notifications.unreadCount', { count: notifications.filter(n => !n.read).length })}
         </span>
       </div>
 
@@ -78,7 +80,7 @@ export const NotificationsWidget: React.FC = () => {
         {notifications.map((notification) => (
           <div
             key={notification.id}
-            className={`p-2 sm:p-3 rounded-lg transition-colors ${
+            className={`p-2 rounded-lg transition-colors ${
               !notification.read
                 ? isDarkMode
                   ? 'bg-gray-700/50'
@@ -95,7 +97,7 @@ export const NotificationsWidget: React.FC = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className={`text-sm font-medium truncate ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {notification.title}
+                    {t(notification.titleKey)}
                   </h3>
                   <div className="flex items-center gap-1 shrink-0">
                     <Calendar className="w-3 h-3 text-gray-400" />
@@ -105,7 +107,7 @@ export const NotificationsWidget: React.FC = () => {
                   </div>
                 </div>
                 <p className={`text-xs mt-0.5 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  {notification.message}
+                  {t(notification.messageKey)}
                 </p>
               </div>
             </div>
@@ -120,7 +122,7 @@ export const NotificationsWidget: React.FC = () => {
             : 'border-gray-200 hover:bg-gray-50 text-gray-600'
         }`}
       >
-        View All Notifications
+        {t('notifications.viewAll')}
       </button>
     </div>
   );
