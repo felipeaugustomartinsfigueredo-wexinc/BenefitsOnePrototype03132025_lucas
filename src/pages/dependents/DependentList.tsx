@@ -10,7 +10,11 @@ interface Dependent {
   relationship: 'spouse' | 'child' | 'other';
   dateOfBirth: string;
   ssn: string;
-  address: string;
+  address: {
+    street: string;
+    state: string;
+    country: string;
+  };
   status: 'active' | 'inactive';
 }
 
@@ -29,8 +33,39 @@ const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave
     relationship: dependent?.relationship || 'child',
     dateOfBirth: dependent?.dateOfBirth || '',
     ssn: dependent?.ssn || '',
-    address: dependent?.address || '',
+    address: dependent?.address || {
+      street: '',
+      state: '',
+      country: '',
+    },
   });
+
+  // Update form data when dependent changes
+  React.useEffect(() => {
+    if (dependent) {
+      setFormData({
+        firstName: dependent.firstName,
+        lastName: dependent.lastName,
+        relationship: dependent.relationship,
+        dateOfBirth: dependent.dateOfBirth,
+        ssn: dependent.ssn,
+        address: dependent.address,
+      });
+    } else {
+      setFormData({
+        firstName: '',
+        lastName: '',
+        relationship: 'child',
+        dateOfBirth: '',
+        ssn: '',
+        address: {
+          street: '',
+          state: '',
+          country: '',
+        },
+      });
+    }
+  }, [dependent]);
 
   if (!isOpen) return null;
 
@@ -137,21 +172,72 @@ const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave
             />
           </div>
 
-          <div>
-            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+          <div className="space-y-4">
+            <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
               Address
             </label>
-            <textarea
-              value={formData.address}
-              onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-              className={`w-full px-4 py-2 rounded-lg border ${
-                isDarkMode
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'border-gray-200'
-              }`}
-              rows={3}
-              required
-            />
+            <div>
+              <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                Street Address
+              </label>
+              <input
+                type="text"
+                value={formData.address.street}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  address: { ...prev.address, street: e.target.value }
+                }))}
+                className={`w-full px-4 py-2 rounded-lg border ${
+                  isDarkMode
+                    ? 'bg-gray-700 border-gray-600 text-white'
+                    : 'border-gray-200'
+                }`}
+                placeholder="123 Main St"
+                required
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  State
+                </label>
+                <input
+                  type="text"
+                  value={formData.address.state}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev,
+                    address: { ...prev.address, state: e.target.value }
+                  }))}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    isDarkMode
+                      ? 'bg-gray-700 border-gray-600 text-white'
+                      : 'border-gray-200'
+                  }`}
+                  placeholder="California"
+                  required
+                />
+              </div>
+              <div>
+                <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  Country
+                </label>
+                <input
+                  type="text"
+                  value={formData.address.country}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev,
+                    address: { ...prev.address, country: e.target.value }
+                  }))}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    isDarkMode
+                      ? 'bg-gray-700 border-gray-600 text-white'
+                      : 'border-gray-200'
+                  }`}
+                  placeholder="United States"
+                  required
+                />
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 mt-6">
@@ -188,7 +274,11 @@ const mockDependents: Dependent[] = [
     relationship: 'spouse',
     dateOfBirth: '1985-06-15',
     ssn: 'XXX-XX-1234',
-    address: '123 Main St, Anytown, USA',
+    address: {
+      street: '123 Main St',
+      state: 'California',
+      country: 'United States',
+    },
     status: 'active',
   },
   {
@@ -198,7 +288,11 @@ const mockDependents: Dependent[] = [
     relationship: 'child',
     dateOfBirth: '2010-03-22',
     ssn: 'XXX-XX-5678',
-    address: '123 Main St, Anytown, USA',
+    address: {
+      street: '123 Main St',
+      state: 'California',
+      country: 'United States',
+    },
     status: 'active',
   },
   {
@@ -208,7 +302,11 @@ const mockDependents: Dependent[] = [
     relationship: 'child',
     dateOfBirth: '2012-09-10',
     ssn: 'XXX-XX-9012',
-    address: '123 Main St, Anytown, USA',
+    address: {
+      street: '123 Main St',
+      state: 'California',
+      country: 'United States',
+    },
     status: 'inactive',
   },
 ];
@@ -267,7 +365,10 @@ export const DependentList: React.FC = () => {
           My Dependents
         </h1>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setSelectedDependent(undefined);
+            setIsModalOpen(true);
+          }}
           className="px-4 py-2 rounded-lg text-white text-sm transition-all duration-300 hover:opacity-90 flex items-center gap-2"
           style={{ backgroundColor: theme.colors.primary.teal }}
         >
@@ -321,7 +422,9 @@ export const DependentList: React.FC = () => {
                   <td className="py-4 capitalize">{dependent.relationship}</td>
                   <td className="py-4">{new Date(dependent.dateOfBirth).toLocaleDateString()}</td>
                   <td className="py-4">{dependent.ssn}</td>
-                  <td className="py-4">{dependent.address}</td>
+                  <td className="py-4">
+                    {dependent.address.street}, {dependent.address.state}, {dependent.address.country}
+                  </td>
                   <td className="py-4">
                     <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
                       dependent.status === 'active'
@@ -358,6 +461,7 @@ export const DependentList: React.FC = () => {
         </div>
       </div>
 
+{/* Teste */}
       <DependentModal
         isOpen={isModalOpen}
         onClose={() => {
