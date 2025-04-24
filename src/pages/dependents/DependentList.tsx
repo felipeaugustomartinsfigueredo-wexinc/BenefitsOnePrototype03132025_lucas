@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useThemeStore } from '../../store/useThemeStore';
-import { Search, Plus, MoreVertical, Users, X, Heart } from 'lucide-react';
+import { User, Search, Plus, MoreVertical, X, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface Dependent {
@@ -25,8 +25,33 @@ interface DependentModalProps {
   dependent?: Dependent;
 }
 
+const countries = [
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
+  "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+  "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde",
+  "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros",
+  "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica",
+  "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini",
+  "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada",
+  "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia",
+  "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati",
+  "Korea, North", "Korea, South", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
+  "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta",
+  "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro",
+  "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger",
+  "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea",
+  "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis",
+  "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
+  "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia",
+  "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan",
+  "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey",
+  "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay",
+  "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+];
+
 const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave, dependent }) => {
   const { theme, isDarkMode } = useThemeStore();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<Omit<Dependent, 'id' | 'status'>>({
     firstName: dependent?.firstName || '',
     lastName: dependent?.lastName || '',
@@ -36,10 +61,11 @@ const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave
     address: dependent?.address || {
       street: '',
       state: '',
-      country: '',
+      country: 'United States',
     },
   });
 
+  // Update form data when dependent changes
   React.useEffect(() => {
     if (dependent) {
       setFormData({
@@ -60,7 +86,7 @@ const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave
         address: {
           street: '',
           state: '',
-          country: '',
+          country: 'United States',
         },
       });
     }
@@ -74,190 +100,180 @@ const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col`}>
-        <div className="sticky top-0 bg-inherit border-b border-gray-200 dark:border-gray-700 p-4">
-          <div className="flex items-center justify-between">
-            <h2 className={`text-xl sm:text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              {dependent ? 'Edit Dependent' : 'Add Dependent'}
-            </h2>
-            <button
-              onClick={onClose}
-              className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl w-full max-w-lg p-6`}>
+        <h2 className={`text-2xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          {dependent ? 'Edit Dependent' : 'Add Dependent'}
+        </h2>
 
-        <div className="overflow-y-auto p-4 flex-1">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-                  className={`w-full px-4 py-2 rounded-lg border ${
-                    isDarkMode
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'border-gray-200'
-                  }`}
-                  required
-                />
-              </div>
-              <div>
-                <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  value={formData.lastName}
-                  onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                  className={`w-full px-4 py-2 rounded-lg border ${
-                    isDarkMode
-                      ? 'bg-gray-700 border-gray-600 text-white'
-                      : 'border-gray-200'
-                  }`}
-                  required
-                />
-              </div>
-            </div>
-
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                Relationship
-              </label>
-              <select
-                value={formData.relationship}
-                onChange={(e) => setFormData(prev => ({ ...prev, relationship: e.target.value as Dependent['relationship'] }))}
-                className={`w-full px-4 py-2 rounded-lg border ${
-                  isDarkMode
-                    ? 'bg-gray-700 border-gray-600 text-white'
-                    : 'border-gray-200'
-                }`}
-                required
-              >
-                <option value="spouse">Spouse</option>
-                <option value="child">Child</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            <div>
-              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                Date of Birth
-              </label>
-              <input
-                type="date"
-                value={formData.dateOfBirth}
-                onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-                className={`w-full px-4 py-2 rounded-lg border ${
-                  isDarkMode
-                    ? 'bg-gray-700 border-gray-600 text-white'
-                    : 'border-gray-200'
-                }`}
-                required
-              />
-            </div>
-
-            <div>
-              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                Social Security Number
+                First Name
               </label>
               <input
                 type="text"
-                value={formData.ssn}
-                onChange={(e) => setFormData(prev => ({ ...prev, ssn: e.target.value }))}
+                value={formData.firstName}
+                onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
                 className={`w-full px-4 py-2 rounded-lg border ${
                   isDarkMode
                     ? 'bg-gray-700 border-gray-600 text-white'
                     : 'border-gray-200'
                 }`}
-                placeholder="XXX-XX-XXXX"
                 required
               />
             </div>
-
-            <div className="space-y-4">
-              <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                Address
+            <div>
+              <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                Last Name
               </label>
+              <input
+                type="text"
+                value={formData.lastName}
+                onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                className={`w-full px-4 py-2 rounded-lg border ${
+                  isDarkMode
+                    ? 'bg-gray-700 border-gray-600 text-white'
+                    : 'border-gray-200'
+                }`}
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Relationship
+            </label>
+            <select
+              value={formData.relationship}
+              onChange={(e) => setFormData(prev => ({ ...prev, relationship: e.target.value as Dependent['relationship'] }))}
+              className={`w-full px-4 py-2 rounded-lg border ${
+                isDarkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'border-gray-200'
+              }`}
+              required
+            >
+              <option value="spouse">Spouse</option>
+              <option value="child">Child</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              value={formData.dateOfBirth}
+              onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+              className={`w-full px-4 py-2 rounded-lg border ${
+                isDarkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'border-gray-200'
+              }`}
+              required
+            />
+          </div>
+
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Social Security Number
+            </label>
+            <input
+              type="text"
+              value={formData.ssn}
+              onChange={(e) => setFormData(prev => ({ ...prev, ssn: e.target.value }))}
+              className={`w-full px-4 py-2 rounded-lg border ${
+                isDarkMode
+                  ? 'bg-gray-700 border-gray-600 text-white'
+                  : 'border-gray-200'
+              }`}
+              placeholder="XXX-XX-XXXX"
+              required
+            />
+          </div>
+
+          <div className="space-y-4">
+            <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+              Address
+            </label>
+            <div>
+              <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                Street Address
+              </label>
+              <input
+                type="text"
+                value={formData.address.street}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  address: { ...prev.address, street: e.target.value }
+                }))}
+                className={`w-full px-4 py-2 rounded-lg border ${
+                  isDarkMode
+                    ? 'bg-gray-700 border-gray-600 text-white'
+                    : 'border-gray-200'
+                }`}
+                placeholder="123 Main St"
+                required
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                  Street Address
+                  State
                 </label>
                 <input
                   type="text"
-                  value={formData.address.street}
+                  value={formData.address.state}
                   onChange={(e) => setFormData(prev => ({
                     ...prev,
-                    address: { ...prev.address, street: e.target.value }
+                    address: { ...prev.address, state: e.target.value }
                   }))}
                   className={`w-full px-4 py-2 rounded-lg border ${
                     isDarkMode
                       ? 'bg-gray-700 border-gray-600 text-white'
                       : 'border-gray-200'
                   }`}
-                  placeholder="123 Main St"
+                  placeholder="California"
                   required
                 />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                    State
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.address.state}
-                    onChange={(e) => setFormData(prev => ({
-                      ...prev,
-                      address: { ...prev.address, state: e.target.value }
-                    }))}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      isDarkMode
-                        ? 'bg-gray-700 border-gray-600 text-white'
-                        : 'border-gray-200'
-                    }`}
-                    placeholder="California"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                    Country
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.address.country}
-                    onChange={(e) => setFormData(prev => ({
-                      ...prev,
-                      address: { ...prev.address, country: e.target.value }
-                    }))}
-                    className={`w-full px-4 py-2 rounded-lg border ${
-                      isDarkMode
-                        ? 'bg-gray-700 border-gray-600 text-white'
-                        : 'border-gray-200'
-                    }`}
-                    placeholder="United States"
-                    required
-                  />
-                </div>
+              <div>
+                <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  Country
+                </label>
+                <select
+                  value={formData.address.country}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev,
+                    address: { ...prev.address, country: e.target.value }
+                  }))}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    isDarkMode
+                      ? 'bg-gray-700 border-gray-600 text-white'
+                      : 'border-gray-200'
+                  }`}
+                  required
+                >
+                  {countries.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
 
-        <div className="sticky bottom-0 bg-inherit border-t border-gray-200 dark:border-gray-700 p-4">
-          <div className="flex flex-col sm:flex-row justify-end gap-3">
+          <div className="flex justify-end gap-3 mt-6">
             <button
               type="button"
               onClick={onClose}
-              className={`w-full sm:w-auto px-4 py-2 rounded-lg ${
+              className={`px-4 py-2 rounded-lg ${
                 isDarkMode
                   ? 'bg-gray-700 text-gray-200 hover:bg-gray-600'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -267,14 +283,13 @@ const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave
             </button>
             <button
               type="submit"
-              onClick={handleSubmit}
-              className="w-full sm:w-auto px-4 py-2 rounded-lg text-white transition-all duration-300 hover:opacity-90"
+              className="px-4 py-2 rounded-lg text-white transition-all duration-300 hover:opacity-90"
               style={{ backgroundColor: theme.colors.primary.teal }}
             >
               {dependent ? 'Update' : 'Add'} Dependent
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
@@ -340,12 +355,14 @@ export const DependentList: React.FC = () => {
 
   const handleSaveDependent = (dependentData: Omit<Dependent, 'id' | 'status'>) => {
     if (selectedDependent) {
+      // Update existing dependent
       setDependents(prev => prev.map(dep =>
         dep.id === selectedDependent.id
           ? { ...dep, ...dependentData }
           : dep
       ));
     } else {
+      // Add new dependent
       const newDependent: Dependent = {
         id: Date.now().toString(),
         status: 'active',
@@ -371,9 +388,9 @@ export const DependentList: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h1 className={`text-2xl sm:text-4xl font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className={`text-4xl font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
           My Dependents
         </h1>
         <button
@@ -381,7 +398,7 @@ export const DependentList: React.FC = () => {
             setSelectedDependent(undefined);
             setIsModalOpen(true);
           }}
-          className="w-full sm:w-auto px-4 py-2 rounded-lg text-white text-sm transition-all duration-300 hover:opacity-90 flex items-center justify-center gap-2"
+          className="px-4 py-2 rounded-lg text-white text-sm transition-all duration-300 hover:opacity-90 flex items-center gap-2"
           style={{ backgroundColor: theme.colors.primary.teal }}
         >
           <Plus className="w-4 h-4" />
@@ -389,10 +406,10 @@ export const DependentList: React.FC = () => {
         </button>
       </div>
 
-      <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg sm:rounded-xl shadow-sm`}>
-        <div className="p-3 sm:p-6">
-          <div className="mb-4 sm:mb-6">
-            <div className="relative">
+      <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl card-shadow`}>
+        <div className="p-6">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="relative flex-1">
               <input
                 type="text"
                 placeholder="Search dependents..."
@@ -408,152 +425,70 @@ export const DependentList: React.FC = () => {
             </div>
           </div>
 
-          {/* Mobile View */}
-          <div className="space-y-3 sm:hidden">
-            {filteredDependents.map((dependent) => (
-              <div
-                key={dependent.id}
-                className={`p-4 rounded-lg border ${
-                  isDarkMode ? 'border-gray-700' : 'border-gray-200'
-                }`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-                      <Heart className="w-5 h-5 text-gray-500" />
-                    </div>
-                    <div>
-                      <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                        {dependent.firstName} {dependent.lastName}
-                      </h3>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} capitalize`}>
-                        {dependent.relationship}
-                      </p>
-                    </div>
-                  </div>
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
-                    dependent.status === 'active'
-                      ? isDarkMode
-                        ? 'bg-green-900/30 text-green-400'
-                        : 'bg-green-50 text-green-700'
-                      : isDarkMode
-                        ? 'bg-red-900/30 text-red-400'
-                        : 'bg-red-50 text-red-700'
-                  }`}>
-                    {dependent.status === 'active' ? 'Active' : 'Inactive'}
-                  </span>
-                </div>
-
-                <div className="space-y-3 mb-4">
-                  <div>
-                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                      Date of Birth
-                    </p>
-                    <p className={`text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                      {new Date(dependent.dateOfBirth).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div>
-                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                      SSN
-                    </p>
-                    <p className={`text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                      {dependent.ssn}
-                    </p>
-                  </div>
-                  <div>
-                    <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                      Address
-                    </p>
-                    <p className={`text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                      {dependent.address.street}, {dependent.address.state}, {dependent.address.country}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex justify-end gap-2">
-                  <button
-                    onClick={() => handleEditDependent(dependent)}
-                    className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
-                  >
-                    <MoreVertical className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => handleToggleStatus(dependent.id)}
-                    className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Desktop View */}
-          <div className="hidden sm:block overflow-x-auto">
-            <table className="w-full min-w-[800px]">
-              <thead>
-                <tr className={`border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-100'}`}>
-                  <th className="text-left pb-4 font-normal">Name</th>
-                  <th className="text-left pb-4 font-normal">Relationship</th>
-                  <th className="text-left pb-4 font-normal">Date of Birth</th>
-                  <th className="text-left pb-4 font-normal">SSN</th>
-                  <th className="text-left pb-4 font-normal">Address</th>
-                  <th className="text-left pb-4 font-normal">Status</th>
-                  <th className="text-right pb-4 font-normal">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredDependents.map((dependent) => (
-                  <tr key={dependent.id} className={`border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-50'} last:border-0`}>
-                    <td className="py-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-                          <Heart className="w-4 h-4 text-gray-500" />
-                        </div>
-                        <span>{dependent.firstName} {dependent.lastName}</span>
+          <table className="w-full">
+            <thead>
+              <tr className={`border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-100'}`}>
+                <th className="text-left pb-4 font-normal">Name</th>
+                <th className="text-left pb-4 font-normal">Relationship</th>
+                <th className="text-left pb-4 font-normal">Date of Birth</th>
+                <th className="text-left pb-4 font-normal">SSN</th>
+                <th className="text-left pb-4 font-normal">Address</th>
+                <th className="text-left pb-4 font-normal">Status</th>
+                <th className="text-right pb-4 font-normal">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredDependents.map((dependent) => (
+                <tr key={dependent.id} className={`border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-50'} last:border-0`}>
+                  <td className="py-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                        <Heart className="w-4 h-4 text-gray-500" />
                       </div>
-                    </td>
-                    <td className="py-4 capitalize">{dependent.relationship}</td>
-                    <td className="py-4">{new Date(dependent.dateOfBirth).toLocaleDateString()}</td>
-                    <td className="py-4">{dependent.ssn}</td>
-                    <td className="py-4">
-                      {dependent.address.street}, {dependent.address.state}, {dependent.address.country}
-                    </td>
-                    <td className="py-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                      <span>{dependent.firstName} {dependent.lastName}</span>
+                    </div>
+                  </td>
+                  <td className="py-4 capitalize">{dependent.relationship}</td>
+                  <td className="py-4">{new Date(dependent.dateOfBirth).toLocaleDateString()}</td>
+                  <td className="py-4">{dependent.ssn}</td>
+                  <td className="py-4">
+                    {dependent.address.street}, {dependent.address.state}, {dependent.address.country}
+                  </td>
+                  <td className="py-4">
+                    <label className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={dependent.status === 'active'}
+                        onChange={() => handleToggleStatus(dependent.id)}
+                        className="form-checkbox h-5 w-5 text-teal-500 rounded border-gray-300 focus:ring-teal-500"
+                      />
+                      <span className={`ml-2 ${
                         dependent.status === 'active'
                           ? isDarkMode
-                            ? 'bg-green-900/30 text-green-400'
-                            : 'bg-green-50 text-green-700'
+                            ? 'text-green-400'
+                            : 'text-green-600'
                           : isDarkMode
-                            ? 'bg-red-900/30 text-red-400'
-                            : 'bg-red-50 text-red-700'
+                            ? 'text-red-400'
+                            : 'text-red-600'
                       }`}>
                         {dependent.status === 'active' ? 'Active' : 'Inactive'}
                       </span>
-                    </td>
-                    <td className="py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleEditDependent(dependent)}
-                          className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
-                        >
-                          <MoreVertical className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleToggleStatus(dependent.id)}
-                          className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </label>
+                  </td>
+                  <td className="py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => handleEditDependent(dependent)}
+                        className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
