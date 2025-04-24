@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Roboto+Condensed&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary-navy: #253746;
+  --color-primary-teal: #00C7B1;
+  --color-primary-light-blue: #A2DDF8;
+  --color-primary-yellow: #FFBF3F;
+  --color-primary-red: #C8102E;
+  --color-primary-white: #FFFFFF;
+  
+  /* Font family variables */
+  --font-inter: 'Inter', sans-serif;
+  --font-roboto-condensed: 'Roboto Condensed', sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8fafc;
+}
+
+body.dark {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.hover-scale {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.card-shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode transitions */
+.dark .card-shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
