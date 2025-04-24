@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useThemeStore } from '../../store/useThemeStore';
-import { User, Search, Plus, MoreVertical, X, Heart } from 'lucide-react';
+import { Search, Plus, MoreVertical, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface Dependent {
@@ -25,8 +25,33 @@ interface DependentModalProps {
   dependent?: Dependent;
 }
 
+const countries = [
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria",
+  "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+  "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde",
+  "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros",
+  "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica",
+  "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini",
+  "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada",
+  "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia",
+  "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati",
+  "Korea, North", "Korea, South", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
+  "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta",
+  "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro",
+  "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger",
+  "Nigeria", "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea",
+  "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis",
+  "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia",
+  "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia",
+  "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan",
+  "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey",
+  "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay",
+  "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+];
+
 const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave, dependent }) => {
   const { theme, isDarkMode } = useThemeStore();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<Omit<Dependent, 'id' | 'status'>>({
     firstName: dependent?.firstName || '',
     lastName: dependent?.lastName || '',
@@ -36,7 +61,7 @@ const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave
     address: dependent?.address || {
       street: '',
       state: '',
-      country: '',
+      country: 'United States',
     },
   });
 
@@ -61,7 +86,7 @@ const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave
         address: {
           street: '',
           state: '',
-          country: '',
+          country: 'United States',
         },
       });
     }
@@ -221,8 +246,7 @@ const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave
                 <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   Country
                 </label>
-                <input
-                  type="text"
+                <select
                   value={formData.address.country}
                   onChange={(e) => setFormData(prev => ({
                     ...prev,
@@ -233,9 +257,14 @@ const DependentModal: React.FC<DependentModalProps> = ({ isOpen, onClose, onSave
                       ? 'bg-gray-700 border-gray-600 text-white'
                       : 'border-gray-200'
                   }`}
-                  placeholder="United States"
                   required
-                />
+                >
+                  {countries.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
@@ -350,12 +379,21 @@ export const DependentList: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleToggleStatus = (id: string) => {
-    setDependents(prev => prev.map(dep =>
-      dep.id === id
-        ? { ...dep, status: dep.status === 'active' ? 'inactive' : 'active' }
-        : dep
-    ));
+  const getStatusClass = (status: string) => {
+    switch (status) {
+      case 'active':
+        return isDarkMode
+          ? 'bg-green-900/30 text-green-400'
+          : 'bg-green-50 text-green-700';
+      case 'inactive':
+        return isDarkMode
+          ? 'bg-red-900/30 text-red-400'
+          : 'bg-red-50 text-red-700';
+      default:
+        return isDarkMode
+          ? 'bg-gray-700 text-gray-300'
+          : 'bg-gray-100 text-gray-700';
+    }
   };
 
   return (
@@ -426,15 +464,7 @@ export const DependentList: React.FC = () => {
                     {dependent.address.street}, {dependent.address.state}, {dependent.address.country}
                   </td>
                   <td className="py-4">
-                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs ${
-                      dependent.status === 'active'
-                        ? isDarkMode
-                          ? 'bg-green-900/30 text-green-400'
-                          : 'bg-green-50 text-green-700'
-                        : isDarkMode
-                          ? 'bg-red-900/30 text-red-400'
-                          : 'bg-red-50 text-red-700'
-                    }`}>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs ${getStatusClass(dependent.status)}`}>
                       {dependent.status === 'active' ? 'Active' : 'Inactive'}
                     </span>
                   </td>
@@ -445,12 +475,6 @@ export const DependentList: React.FC = () => {
                         className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
                       >
                         <MoreVertical className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleToggleStatus(dependent.id)}
-                        className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
-                      >
-                        <X className="w-4 h-4" />
                       </button>
                     </div>
                   </td>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Bot, User, Globe, Check } from 'lucide-react';
+import { Search, Bot, User, Globe, Check, Moon, Sun } from 'lucide-react';
 import { useThemeStore } from '../../store/useThemeStore';
 import { ProfileMenu } from './ProfileMenu';
 import { GenAIModal } from '../ai/GenAIModal';
@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 const languages = [
   { code: 'en', name: 'English' },
+  { code: 'pt-BR', name: 'Português (Brasil)' },
   { code: 'es', name: 'Español' },
   { code: 'de', name: 'Deutsch' },
   { code: 'ja', name: '日本語' },
@@ -14,7 +15,7 @@ const languages = [
 ];
 
 export const Header: React.FC = () => {
-  const { theme, isDarkMode } = useThemeStore();
+  const { theme, isDarkMode, toggleDarkMode } = useThemeStore();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -116,6 +117,19 @@ export const Header: React.FC = () => {
               </div>
             )}
           </div>
+
+          <button
+            className={`p-2 rounded-full ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'} transition-all duration-300`}
+            style={{ color: theme.colors.primary.teal }}
+            onClick={toggleDarkMode}
+            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {isDarkMode ? (
+              <Sun className="w-6 h-6" />
+            ) : (
+              <Moon className="w-6 h-6" />
+            )}
+          </button>
           
           <button
             className={`p-2 rounded-full ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'} transition-all duration-300`}
