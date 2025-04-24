@@ -12,7 +12,7 @@ interface ThemeStore {
 
 export const useThemeStore = create<ThemeStore>((set) => ({
   theme: defaultTheme,
-  isNavCollapsed: true, // Set default to true for mobile-first
+  isNavCollapsed: false,
   isDarkMode: false,
   updateTheme: (newTheme) =>
     set((state) => ({

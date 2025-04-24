@@ -64,7 +64,7 @@ export const NotificationsWidget: React.FC = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h2 className={`text-base sm:text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+        <h2 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
           Notifications
         </h2>
         <span className={`text-xs px-2 py-1 rounded-full ${
@@ -78,7 +78,7 @@ export const NotificationsWidget: React.FC = () => {
         {notifications.map((notification) => (
           <div
             key={notification.id}
-            className={`p-2 sm:p-3 rounded-lg transition-colors ${
+            className={`p-2 rounded-lg transition-colors ${
               !notification.read
                 ? isDarkMode
                   ? 'bg-gray-700/50'
