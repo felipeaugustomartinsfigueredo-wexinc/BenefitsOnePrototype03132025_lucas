@@ -23,6 +23,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f8fafc;
+  min-width: 320px;
 }
 
 body.dark {
@@ -45,4 +46,76 @@ body.dark {
 /* Dark mode transitions */
 .dark .card-shadow {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive table styles */
+@media (max-width: 1024px) {
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Responsive text sizes */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.875rem !important;
+    line-height: 2.25rem !important;
+  }
+
+  h2 {
+    font-size: 1.5rem !important;
+    line-height: 2rem !important;
+  }
+
+  .text-sm-mobile {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+}
+
+/* Responsive spacing */
+@media (max-width: 768px) {
+  .responsive-p {
+    padding: 1rem !important;
+  }
+
+  .responsive-m {
+    margin: 1rem !important;
+  }
+
+  .responsive-gap {
+    gap: 1rem !important;
+  }
+}
+
+/* Responsive grid */
+@media (max-width: 640px) {
+  .grid-cols-responsive {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Responsive flex */
+@media (max-width: 640px) {
+  .flex-responsive {
+    flex-direction: column !important;
+  }
+
+  .flex-responsive > * {
+    width: 100% !important;
+  }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

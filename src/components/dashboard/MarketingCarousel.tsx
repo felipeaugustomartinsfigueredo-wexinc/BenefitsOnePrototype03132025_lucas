@@ -66,6 +66,8 @@ export const MarketingCarousel: React.FC = () => {
   const { theme, isDarkMode } = useThemeStore();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -89,11 +91,39 @@ export const MarketingCarousel: React.FC = () => {
     setTimeout(() => setIsTransitioning(false), 500);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      handleNext();
+    }
+    if (isRightSwipe) {
+      handlePrevious();
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
   return (
     <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl overflow-hidden relative`}>
       <div 
-        className="relative h-[300px] transition-transform duration-500 ease-in-out"
+        className="relative h-[200px] sm:h-[300px] transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div className="absolute inset-0 flex">
           {slides.map((slide, index) => (
@@ -108,16 +138,16 @@ export const MarketingCarousel: React.FC = () => {
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center">
-                <div className="p-8 max-w-lg">
-                  <h2 className="text-3xl font-bold text-white mb-4">
+                <div className="p-4 sm:p-8 max-w-lg">
+                  <h2 className="text-xl sm:text-3xl font-bold text-white mb-2 sm:mb-4">
                     {slide.title}
                   </h2>
-                  <p className="text-gray-200 mb-6">
+                  <p className="text-sm sm:text-base text-gray-200 mb-4 sm:mb-6 line-clamp-2 sm:line-clamp-none">
                     {slide.description}
                   </p>
                   <a
                     href={slide.ctaUrl}
-                    className="inline-block px-6 py-3 rounded-lg text-white transition-all duration-300 hover:opacity-90"
+                    className="inline-block px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-white text-sm sm:text-base transition-all duration-300 hover:opacity-90"
                     style={{ backgroundColor: theme.colors.primary.teal }}
                   >
                     {slide.ctaText}
@@ -131,26 +161,29 @@ export const MarketingCarousel: React.FC = () => {
 
       <button
         onClick={handlePrevious}
-        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-1 sm:p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors"
+        aria-label="Previous slide"
       >
-        <ChevronLeft className="w-6 h-6" />
+        <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
       </button>
 
       <button
         onClick={handleNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-1 sm:p-2 rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors"
+        aria-label="Next slide"
       >
-        <ChevronRight className="w-6 h-6" />
+        <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
       </button>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-1 sm:gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === currentSlide ? 'bg-white w-6' : 'bg-white/50'
+            className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all ${
+              index === currentSlide ? 'bg-white w-4 sm:w-6' : 'bg-white/50'
             }`}
             onClick={() => setCurrentSlide(index)}
+            aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
