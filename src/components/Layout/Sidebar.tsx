@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, Home, Heart, Users, ChevronLeft, ChevronRight, Palette, GitBranch, UserCog, Wallet, Settings as SettingsIcon, FileText, DollarSign } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useThemeStore } from '../../store/useThemeStore';
@@ -155,6 +155,33 @@ export const Sidebar: React.FC = () => {
   const [expandedItems, setExpandedItems] = useState<string[]>(['home']);
   const { t } = useTranslation();
 
+  // Close sidebar on mobile when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const isMobile = window.innerWidth < 768;
+      const isMenuButton = target.closest('[data-menu-button]');
+      
+      if (isMobile && !isNavCollapsed && !isMenuButton) {
+        const sidebar = document.querySelector('[data-sidebar]');
+        if (sidebar && !sidebar.contains(target)) {
+          toggleNav();
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isNavCollapsed, toggleNav]);
+
+  // Close sidebar on mobile when route changes
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    if (isMobile && !isNavCollapsed) {
+      toggleNav();
+    }
+  }, [location.pathname]);
+
   const toggleExpand = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     setExpandedItems(prev =>
@@ -174,9 +201,13 @@ export const Sidebar: React.FC = () => {
 
   return (
     <div className="relative">
-      <nav className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} border-r fixed h-[calc(100vh-4rem)] overflow-y-auto transition-all duration-300 top-16 ${
-        isNavCollapsed ? 'w-20' : 'w-64'
-      }`}>
+      <nav 
+        data-sidebar
+        className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} 
+          border-r fixed h-[calc(100vh-4rem)] overflow-y-auto transition-all duration-300 top-16 
+          ${isNavCollapsed ? '-translate-x-full md:translate-x-0 w-0 md:w-20' : 'translate-x-0 w-64'} 
+          z-[60]`}
+      >
         <div className="py-2">
           {menuCategories.map((category, index) => (
             <React.Fragment key={category.id}>
@@ -282,7 +313,7 @@ export const Sidebar: React.FC = () => {
       
       <button
         onClick={toggleNav}
-        className={`fixed top-1/2 transform -translate-y-1/2 z-50 ${
+        className={`fixed top-1/2 transform -translate-y-1/2 z-50 hidden md:flex ${
           isDarkMode ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'bg-white border-gray-100 hover:bg-gray-50'
         } rounded-full p-2 shadow-sm border transition-all duration-300`}
         style={{ 
@@ -296,6 +327,14 @@ export const Sidebar: React.FC = () => {
           <ChevronLeft className="w-4 h-4" />
         )}
       </button>
+
+      {/* Mobile overlay */}
+      {!isNavCollapsed && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 md:hidden"
+          onClick={toggleNav}
+        />
+      )}
     </div>
   );
 };
