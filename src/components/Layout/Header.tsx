@@ -15,7 +15,7 @@ const languages = [
 ];
 
 export const Header: React.FC = () => {
-  const { theme, isDarkMode, toggleDarkMode } = useThemeStore();
+  const { theme, isDarkMode, isNavCollapsed, toggleDarkMode, toggleNav } = useThemeStore();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -54,7 +54,7 @@ export const Header: React.FC = () => {
   const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
 
   const handleMenuClick = () => {
-    
+    toggleNav();
   };
   
   return (
