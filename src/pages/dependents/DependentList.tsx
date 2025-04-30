@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useThemeStore } from '../../store/useThemeStore';
-import { Search, Plus, MoreVertical, Heart } from 'lucide-react';
+import { User, Search, Plus, MoreVertical, X, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface Dependent {
@@ -464,9 +464,25 @@ export const DependentList: React.FC = () => {
                     {dependent.address.street}, {dependent.address.state}, {dependent.address.country}
                   </td>
                   <td className="py-4">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs ${getStatusClass(dependent.status)}`}>
-                      {dependent.status === 'active' ? 'Active' : 'Inactive'}
-                    </span>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={dependent.status === 'active'}
+                        onChange={() => handleToggleStatus(dependent.id)}
+                        className="form-checkbox h-5 w-5 text-teal-500 rounded border-gray-300 focus:ring-teal-500"
+                      />
+                      <span className={`ml-2 ${
+                        dependent.status === 'active'
+                          ? isDarkMode
+                            ? 'text-green-400'
+                            : 'text-green-600'
+                          : isDarkMode
+                            ? 'text-red-400'
+                            : 'text-red-600'
+                      }`}>
+                        {dependent.status === 'active' ? 'Active' : 'Inactive'}
+                      </span>
+                    </label>
                   </td>
                   <td className="py-4 text-right">
                     <div className="flex items-center justify-end gap-2">

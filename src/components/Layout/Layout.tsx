@@ -2,6 +2,7 @@ import React from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { useThemeStore } from '../../store/useThemeStore';
+import { ChatInterface } from '../chat/ChatInterface';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </main>
       </div>
+      <ChatInterface />
     </div>
   );
 };

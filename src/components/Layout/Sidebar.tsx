@@ -60,8 +60,13 @@ const menuCategories: MenuCategory[] = [
         subItems: [
           { id: 'account', labelKey: 'navigation.hsa.account', path: '/hsa/account' },
           { id: 'investments', labelKey: 'navigation.hsa.investments', path: '/hsa/investments' },
-          { id: 'claims', labelKey: 'navigation.hsa.claims', path: '/hsa/claims' },
         ],
+      },
+      {
+        id: 'claims',
+        labelKey: 'navigation.hsa.claims',
+        icon: <FileText className="w-5 h-5" />,
+        path: '/hsa/claims',
       },
       {
         id: 'cobra',
