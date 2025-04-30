@@ -6,6 +6,7 @@ import { es } from './locales/es';
 import { de } from './locales/de';
 import { ja } from './locales/ja';
 import { fr } from './locales/fr';
+import { ptBR } from './locales/pt-BR';
 
 i18n
   .use(LanguageDetector)
@@ -14,6 +15,9 @@ i18n
     resources: {
       en: {
         translation: en,
+      },
+      'pt-BR': {
+        translation: ptBR,
       },
       es: {
         translation: es,
