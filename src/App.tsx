@@ -12,7 +12,8 @@ import { UserList } from './pages/user-management/UserList';
 import { RoleList } from './pages/user-management/RoleList';
 import { AccountDetails } from './pages/hsa/AccountDetails';
 import { Investments } from './pages/hsa/Investments';
-import { Claims } from './pages/hsa/Claims';
+import { NewClaim } from './pages/claims/NewClaim';
+import { ViewClaims } from './pages/claims/ViewClaims';
 import { DependentList } from './pages/dependents/DependentList';
 import { Medical } from './pages/benefits/Medical';
 import { Dental } from './pages/benefits/Dental';
@@ -117,10 +118,18 @@ function App() {
           </PrivateRoute>
         } />
 
-        <Route path="/hsa/claims" element={
+        <Route path="/claims/new" element={
           <PrivateRoute>
             <Layout>
-              <Claims />
+              <NewClaim />
+            </Layout>
+          </PrivateRoute>
+        } />
+
+        <Route path="/claims/view" element={
+          <PrivateRoute>
+            <Layout>
+              <ViewClaims />
             </Layout>
           </PrivateRoute>
         } />

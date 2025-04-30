@@ -49,7 +49,11 @@ export const en = {
       title: 'My HSA Account',
       account: 'Account Details',
       investments: 'Investments',
-      claims: 'Claims',
+    },
+    claims: {
+      title: 'Claims',
+      new: 'New Claim',
+      view: 'View Claims',
     },
     cobra: {
       title: 'COBRA Coverage',
