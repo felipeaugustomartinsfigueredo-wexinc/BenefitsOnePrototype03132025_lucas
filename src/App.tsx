@@ -19,7 +19,7 @@ import { Dental } from './pages/benefits/Dental';
 import { Vision } from './pages/benefits/Vision';
 import { LifeInsurance } from './pages/benefits/LifeInsurance';
 import { Disability } from './pages/benefits/Disability';
-import { Plans } from './pages/plan-setup/Plans';
+import { Plans } from './pages/plain-setup/Plans';
 import { AvailableReports } from './pages/reports/AvailableReports';
 import { ReportSubscriptions } from './pages/reports/ReportSubscriptions';
 import { MakePayment } from './pages/cobra/MakePayment';
