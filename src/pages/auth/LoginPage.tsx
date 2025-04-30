@@ -38,7 +38,7 @@ export const LoginPage: React.FC = () => {
     try {
       await login(email, password);
       navigate('/');
-    } catch (err) {
+    } catch  {
       setError(t('auth.invalidCredentials'));
     } finally {
       setIsLoading(false);

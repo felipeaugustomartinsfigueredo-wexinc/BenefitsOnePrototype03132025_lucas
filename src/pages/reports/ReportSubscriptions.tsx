@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useThemeStore } from '../../store/useThemeStore';
 import { Search, Clock, FileText, BarChart, PieChart, TrendingUp, Users, MoreVertical, Check, X, Plus } from 'lucide-react';
+import { Card } from '../../components/ui/Card';
+import { Input } from '../../components/ui/Input';
+import { Button } from '../../components/ui/Button';
+import { Badge } from '../../components/ui/Badge';
 
 interface Subscription {
   id: string;
@@ -103,67 +107,63 @@ export const ReportSubscriptions: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className={`text-4xl font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+    <div className="space-y-6 px-4 md:px-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h1 className={`text-2xl sm:text-4xl font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
           Report Subscriptions
         </h1>
-        <button
-          className="px-4 py-2 rounded-lg text-white text-sm transition-all duration-300 hover:opacity-90 flex items-center gap-2"
-          style={{ backgroundColor: theme.colors.primary.teal }}
+        <Button
+          icon={<Plus className="w-4 h-4" />}
+          className="w-full sm:w-auto"
         >
-          <Plus className="w-4 h-4" />
           Add Subscription
-        </button>
+        </Button>
       </div>
 
-      <div className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-sm`}>
-        <div className="p-6">
-          <div className="flex flex-wrap items-center gap-4 mb-6">
-            <div className="relative flex-1 min-w-[240px]">
-              <input
+      <Card>
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="w-full sm:w-auto flex-1">
+              <Input
                 type="text"
                 placeholder="Search subscriptions..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className={`pl-10 pr-4 py-2 rounded-lg border w-full ${
-                  isDarkMode 
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                    : 'border-gray-200 focus:ring-2 focus:ring-teal-500'
-                } focus:outline-none transition-all duration-300`}
+                leftIcon={<Search className="w-5 h-5" />}
               />
-              <Search className={`absolute left-3 top-2.5 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'} w-5 h-5`} />
             </div>
 
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className={`px-4 py-2 rounded-lg border ${
-                isDarkMode
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'border-gray-200'
-              }`}
-            >
-              <option value="all">All Categories</option>
-              <option value="enrollment">Enrollment</option>
-              <option value="financial">Financial</option>
-              <option value="utilization">Utilization</option>
-              <option value="demographic">Demographic</option>
-            </select>
+            <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-4">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className={`w-full sm:w-auto px-4 py-2 rounded-lg border ${
+                  isDarkMode
+                    ? 'bg-gray-700 border-gray-600 text-white'
+                    : 'border-gray-200'
+                }`}
+              >
+                <option value="all">All Categories</option>
+                <option value="enrollment">Enrollment</option>
+                <option value="financial">Financial</option>
+                <option value="utilization">Utilization</option>
+                <option value="demographic">Demographic</option>
+              </select>
 
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className={`px-4 py-2 rounded-lg border ${
-                isDarkMode
-                  ? 'bg-gray-700 border-gray-600 text-white'
-                  : 'border-gray-200'
-              }`}
-            >
-              <option value="all">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="paused">Paused</option>
-            </select>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className={`w-full sm:w-auto px-4 py-2 rounded-lg border ${
+                  isDarkMode
+                    ? 'bg-gray-700 border-gray-600 text-white'
+                    : 'border-gray-200'
+                }`}
+              >
+                <option value="all">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="paused">Paused</option>
+              </select>
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -174,7 +174,91 @@ export const ReportSubscriptions: React.FC = () => {
                   isDarkMode ? 'border-gray-700' : 'border-gray-200'
                 }`}
               >
-                <div className="flex items-center justify-between gap-4">
+                {/* Mobile View */}
+                <div className="block sm:hidden space-y-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+                      }`}>
+                        {getCategoryIcon(subscription.category)}
+                      </div>
+                      <div>
+                        <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                          {subscription.reportName}
+                        </h3>
+                        <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} capitalize`}>
+                          {subscription.category}
+                        </p>
+                      </div>
+                    </div>
+                    <Badge
+                      variant={subscription.status === 'active' ? 'success' : 'warning'}
+                      icon={subscription.status === 'active' ? <Check className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                    >
+                      {subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
+                    </Badge>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div>
+                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        Frequency
+                      </p>
+                      <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} capitalize`}>
+                        {subscription.frequency}
+                      </p>
+                    </div>
+                    <div>
+                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        Format
+                      </p>
+                      <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'} uppercase`}>
+                        {subscription.format}
+                      </p>
+                    </div>
+                    <div>
+                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        Recipients
+                      </p>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {subscription.recipients.map((recipient, index) => (
+                          <span
+                            key={index}
+                            className={`px-2 py-0.5 rounded-full text-xs ${
+                              isDarkMode
+                                ? 'bg-gray-700 text-gray-300'
+                                : 'bg-gray-100 text-gray-700'
+                            }`}
+                          >
+                            {recipient}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        Next Run
+                      </p>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4 text-gray-400" />
+                        <p className={`${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                          {new Date(subscription.nextRun).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button
+                      variant="secondary"
+                      icon={<MoreVertical className="w-4 h-4" />}
+                    />
+                  </div>
+                </div>
+
+                {/* Desktop View */}
+                <div className="hidden sm:flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3 min-w-[200px]">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                       isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
@@ -185,8 +269,8 @@ export const ReportSubscriptions: React.FC = () => {
                       <h3 className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                         {subscription.reportName}
                       </h3>
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        {subscription.category.charAt(0).toUpperCase() + subscription.category.slice(1)}
+                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} capitalize`}>
+                        {subscription.category}
                       </p>
                     </div>
                   </div>
@@ -246,22 +330,25 @@ export const ReportSubscriptions: React.FC = () => {
                       <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                         Status
                       </p>
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${getStatusClass(subscription.status)}`}>
-                        {subscription.status === 'active' ? <Check className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                      <Badge
+                        variant={subscription.status === 'active' ? 'success' : 'warning'}
+                        icon={subscription.status === 'active' ? <Check className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                      >
                         {subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
-                      </span>
+                      </Badge>
                     </div>
 
-                    <button className={`p-2 rounded-lg ${isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}>
-                      <MoreVertical className="w-4 h-4" />
-                    </button>
+                    <Button
+                      variant="secondary"
+                      icon={<MoreVertical className="w-4 h-4" />}
+                    />
                   </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

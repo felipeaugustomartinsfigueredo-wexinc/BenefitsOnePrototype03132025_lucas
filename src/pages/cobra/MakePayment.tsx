@@ -235,7 +235,7 @@ const mockPaymentMethods: PaymentMethod[] = [
 ];
 
 export const MakePayment: React.FC = () => {
-  const { theme, isDarkMode } = useThemeStore();
+  const { isDarkMode } = useThemeStore();
   const [selectedMethod, setSelectedMethod] = useState<string>(mockPaymentMethods[0].id);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCardModalOpen, setIsCardModalOpen] = useState(false);
@@ -377,8 +377,8 @@ export const MakePayment: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    Payment Method
-                  </h3>
+                  Payment Method
+                </h3>
                   <Button
                     variant="secondary"
                     icon={<Plus className="w-4 h-4" />}
@@ -391,7 +391,7 @@ export const MakePayment: React.FC = () => {
                   </Button>
                 </div>
                 <div className="space-y-3">
-                  {paymentMethods.map((method) => (
+                  {mockPaymentMethods.map((method) => (
                     <label
                       key={method.id}
                       className={`flex items-center p-4 rounded-lg border cursor-pointer transition-colors ${
@@ -432,11 +432,11 @@ export const MakePayment: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {method.isDefault && (
-                          <Badge variant="info" className="ml-auto">
-                            Default
-                          </Badge>
-                        )}
+                      {method.isDefault && (
+                        <Badge variant="info" className="ml-auto">
+                          Default
+                        </Badge>
+                      )}
                         <Button
                           variant="secondary"
                           icon={<Edit className="w-4 h-4" />}

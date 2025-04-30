@@ -34,7 +34,7 @@ export const ThemeColors: React.FC = () => {
                   htmlFor={key} 
                   className={`text-lg capitalize ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
                 >
-                  {t(`theme.colors.${key}`)}
+                  {t(`theme.colors.${key.toLowerCase()}`)}
                 </label>
                 <div className="flex items-center gap-4">
                   <div 

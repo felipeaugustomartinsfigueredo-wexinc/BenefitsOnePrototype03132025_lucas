@@ -62,10 +62,12 @@ export const GenAIModal: React.FC<GenAIModalProps> = ({ isOpen, onClose }) => {
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = '';
     };
   }, [isOpen, onClose]);
 
@@ -83,7 +85,7 @@ export const GenAIModal: React.FC<GenAIModalProps> = ({ isOpen, onClose }) => {
   const toggleMicrophone = async () => {
     if (!isListening) {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         // Here you would implement speech recognition
         setIsListening(true);
       } catch (err) {
@@ -105,12 +107,15 @@ export const GenAIModal: React.FC<GenAIModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <Card ref={modalRef} className="w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+      <Card 
+        ref={modalRef} 
+        className="w-full h-[90vh] sm:h-auto sm:max-h-[80vh] max-w-2xl overflow-hidden flex flex-col rounded-t-xl sm:rounded-xl m-0"
+      >
         <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-3">
             <MessageSquare className="w-6 h-6" style={{ color: theme.colors.primary.teal }} />
-            <h2 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-lg sm:text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
               How can I help you?
             </h2>
           </div>
@@ -118,6 +123,7 @@ export const GenAIModal: React.FC<GenAIModalProps> = ({ isOpen, onClose }) => {
             variant="secondary"
             icon={<X className="w-5 h-5" />}
             onClick={onClose}
+            className="!p-1.5"
           />
         </div>
 
@@ -153,51 +159,50 @@ export const GenAIModal: React.FC<GenAIModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-          <form onSubmit={handleSubmit}>
-            <div className="relative">
-              <textarea
-                ref={inputRef}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Type your question or request..."
-                className={`w-full px-4 py-3 pr-24 rounded-lg border resize-none ${
-                  isDarkMode
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
-                    : 'border-gray-200 placeholder-gray-500'
-                } focus:outline-none focus:ring-2 focus:ring-teal-500`}
-                rows={3}
-              />
-              <div className="absolute bottom-3 right-3 flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={toggleMicrophone}
-                  className={`p-2 rounded-lg transition-colors ${
-                    isListening
-                      ? 'text-red-500'
-                      : isDarkMode
-                      ? 'text-gray-400 hover:bg-gray-600'
-                      : 'text-gray-500 hover:bg-gray-100'
-                  }`}
-                >
-                  {isListening ? (
-                    <MicOff className="w-5 h-5" />
-                  ) : (
-                    <Mic className="w-5 h-5" />
-                  )}
-                </button>
-                <button
-                  type="submit"
-                  disabled={!prompt.trim() || isProcessing}
-                  className={`p-2 rounded-lg transition-colors ${
-                    !prompt.trim() || isProcessing
-                      ? 'opacity-50 cursor-not-allowed'
-                      : ''
-                  }`}
-                  style={{ color: theme.colors.primary.teal }}
-                >
-                  <Send className="w-5 h-5" />
-                </button>
-              </div>
+          <form onSubmit={handleSubmit} className="relative">
+            <textarea
+              ref={inputRef}
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Type your question or request..."
+              className={`w-full px-4 py-3 pr-24 rounded-lg border resize-none ${
+                isDarkMode
+                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400'
+                  : 'border-gray-200 placeholder-gray-500'
+              } focus:outline-none focus:ring-2 focus:ring-teal-500`}
+              rows={3}
+              style={{ minHeight: '60px' }}
+            />
+            <div className="absolute bottom-3 right-3 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleMicrophone}
+                className={`p-2 rounded-lg transition-colors ${
+                  isListening
+                    ? 'text-red-500'
+                    : isDarkMode
+                    ? 'text-gray-400 hover:bg-gray-600'
+                    : 'text-gray-500 hover:bg-gray-100'
+                }`}
+              >
+                {isListening ? (
+                  <MicOff className="w-5 h-5" />
+                ) : (
+                  <Mic className="w-5 h-5" />
+                )}
+              </button>
+              <button
+                type="submit"
+                disabled={!prompt.trim() || isProcessing}
+                className={`p-2 rounded-lg transition-colors ${
+                  !prompt.trim() || isProcessing
+                    ? 'opacity-50 cursor-not-allowed'
+                    : ''
+                }`}
+                style={{ color: theme.colors.primary.teal }}
+              >
+                <Send className="w-5 h-5" />
+              </button>
             </div>
           </form>
         </div>

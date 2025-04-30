@@ -16,7 +16,9 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Header />
       <div className="flex pt-16">
         <Sidebar />
-        <main className={`flex-1 p-8 transition-all duration-300 ${isNavCollapsed ? 'ml-20' : 'ml-64'}`}>
+        <main className={`flex-1 p-4 md:p-8 transition-all duration-300 ${
+          isNavCollapsed ? 'ml-0 md:ml-20' : 'ml-0 md:ml-64'
+        }`}>
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

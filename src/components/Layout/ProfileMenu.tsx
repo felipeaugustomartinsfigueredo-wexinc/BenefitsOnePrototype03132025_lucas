@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { User, Moon, Sun, Settings, LogOut } from 'lucide-react';
+import { Moon, Sun, Settings, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useThemeStore } from '../../store/useThemeStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -11,7 +11,7 @@ interface ProfileMenuProps {
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({ isOpen, onClose }) => {
   const menuRef = useRef<HTMLDivElement>(null);
-  const { theme, isDarkMode, toggleDarkMode } = useThemeStore();
+  const { isDarkMode, toggleDarkMode } = useThemeStore();
   const { logout } = useAuthStore();
   const navigate = useNavigate();
 
@@ -41,7 +41,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ isOpen, onClose }) => 
   return (
     <div
       ref={menuRef}
-      className="absolute right-0 top-12 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-2"
+      className="absolute right-0 top-12 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 py-2 z-[100]"
     >
       <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
         <p className="text-sm font-bold text-gray-900 dark:text-white">John Doe</p>

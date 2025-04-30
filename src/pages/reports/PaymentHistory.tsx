@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useThemeStore } from '../../store/useThemeStore';
+import { Search, Download, Calendar, CheckCircle2, XCircle, Clock, DollarSign } from 'lucide-react';
 import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Badge } from '../../components/ui/Badge';
-import { Search, Download, Calendar, CheckCircle2, XCircle, Clock } from 'lucide-react';
 
 interface Payment {
   id: string;
@@ -63,7 +63,7 @@ const mockPayments: Payment[] = [
 ];
 
 export const PaymentHistory: React.FC = () => {
-  const { isDarkMode } = useThemeStore();
+  const { theme, isDarkMode } = useThemeStore();
   const [searchTerm, setSearchTerm] = useState('');
 
   const getStatusBadgeVariant = (status: string): 'success' | 'warning' | 'error' => {
@@ -95,8 +95,8 @@ export const PaymentHistory: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className={`text-4xl font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h1 className={`text-2xl sm:text-4xl font-black ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
           Payment History
         </h1>
       </div>
@@ -104,7 +104,7 @@ export const PaymentHistory: React.FC = () => {
       <Card>
         <div className="space-y-6">
           <div className="flex items-center gap-4">
-            <div className="flex-1">
+            <div className="w-full">
               <Input
                 type="text"
                 placeholder="Search payments..."
@@ -115,7 +115,76 @@ export const PaymentHistory: React.FC = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Mobile View */}
+          <div className="space-y-4 sm:hidden">
+            {filteredPayments.map((payment) => (
+              <div
+                key={payment.id}
+                className={`p-4 rounded-lg border ${
+                  isDarkMode ? 'border-gray-700' : 'border-gray-200'
+                }`}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-gray-400" />
+                    <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>
+                      {new Date(payment.date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <Badge
+                    variant={getStatusBadgeVariant(payment.status)}
+                    icon={getStatusIcon(payment.status)}
+                  >
+                    {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                  </Badge>
+                </div>
+
+                <div className="space-y-2">
+                  <div>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      Coverage Period
+                    </p>
+                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      {payment.coveragePeriod}
+                    </p>
+                  </div>
+                  <div>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      Payment Method
+                    </p>
+                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      {payment.method}
+                    </p>
+                  </div>
+                  <div>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      Amount
+                    </p>
+                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      ${payment.amount.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+
+                {payment.receiptUrl && (
+                  <button
+                    onClick={() => window.open(payment.receiptUrl, '_blank')}
+                    className={`w-full mt-4 px-4 py-2 rounded-lg flex items-center justify-center gap-2 ${
+                      isDarkMode
+                        ? 'bg-gray-700 hover:bg-gray-600 text-white'
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                    }`}
+                  >
+                    <Download className="w-4 h-4" />
+                    Download Receipt
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop View */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className={`border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-100'}`}>
@@ -129,7 +198,7 @@ export const PaymentHistory: React.FC = () => {
               </thead>
               <tbody>
                 {filteredPayments.map((payment) => (
-                  <tr
+                  <tr 
                     key={payment.id}
                     className={`border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-100'} last:border-0`}
                   >
@@ -173,38 +242,41 @@ export const PaymentHistory: React.FC = () => {
       </Card>
 
       <Card>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-            Payment Summary
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+          <div className={`p-4 rounded-lg flex-1 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
             <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Total Paid (YTD)
             </p>
-            <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              $2,625.00
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <DollarSign className="w-5 h-5" style={{ color: theme.colors.primary.teal }} />
+              <p className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                2,625.00
+              </p>
+            </div>
           </div>
 
-          <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+          <div className={`p-4 rounded-lg flex-1 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
             <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               Next Payment Due
             </p>
-            <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              $875.00
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <Calendar className="w-5 h-5" style={{ color: theme.colors.primary.yellow }} />
+              <p className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                March 15, 2025
+              </p>
+            </div>
           </div>
 
-          <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+          <div className={`p-4 rounded-lg flex-1 ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
             <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Due Date
+              Amount Due
             </p>
-            <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              March 15, 2025
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <DollarSign className="w-5 h-5" style={{ color: theme.colors.primary.red }} />
+              <p className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                875.00
+              </p>
+            </div>
           </div>
         </div>
       </Card>
